@@ -151,13 +151,13 @@ class Data_Dynamic_Program:
     # Метод вывода таблицы данного часа
     # ------------------------------------------------------------------------------------------------------------------
     def to_string_table(self):
-        print("Текущий час: ", self.hour+1, "\n",
+        print("Текущий час: ", self.hour + 1, "\n",
               "Нагрузка текущего часа: ", self.load_charge, "\n",
               "Постоянное потребление: ", self.const_charge, "\n",
               "Тариф на электроэнергию в текущий час: ", self.load_price, "\n",
               "Возможные варианты торговых операций: ", self.now_trading_operation, "\n",
               "Возможны варианты заряда ПЭБ на конец часа: ", self.now_last_level_charge, "\n",
-              "Возможный доход: ", self.now_last_income
+              "Возможный доход: ", self.now_last_income, "\n"
               )
 
 
@@ -185,6 +185,9 @@ def calculation(const_charge, load_charge, load_price, initChar, targetChar):
                                               payslips[i - 1].now_trading_operation)
             data_table.table_Data_Update()
 
+        # --------------------------------------------------------------------------------------------------------------
+        # Вывод таблицы за данный час в консоль
+        # --------------------------------------------------------------------------------------------------------------
         data_table.to_string_table()
         payslips.append(data_table)
 
@@ -251,19 +254,29 @@ def calculation(const_charge, load_charge, load_price, initChar, targetChar):
     return inc_mass[::-1], energy_mass[::-1]
 
 
-inc, energy = calculation(constantLoad, loadSchedule, priceSchedule, initCharge, targetCharge)
-print(inc)
-print(energy)
+# ----------------------------------------------------------------------------------------------------------------------
+# ------------------------------Блок визуализации задачи динамического программирования---------------------------------
+# ----------------------------------------------------------------------------------------------------------------------
+def visual_consumer(time_mass, mass_val, name_graf, num_graf, name_y, color):
+    plt.subplot(2, 1, num_graf)
+    plt.grid(True, color="grey", linewidth="1.4", linestyle="-.")
+    plt.title(name_graf, fontsize=10)
+    plt.ylabel(name_y, fontsize=14)
+    plt.xlabel('time, ч', fontsize=10)
+    plt.plot(time_mass, mass_val, 'r', c=color, linewidth=3, linestyle="-")
 
 
-def visual_consumer(time_mass, power_mass):
-    plt.figure()
-    plt.title('График потребления нагрузки')
-    plt.grid()
-    plt.plot(time_mass, power_mass, 'tab:red')
-    plt.show()
+# ----------------------------------------------------------------------------------------------------------------------
+# Расчет максимального дохода данной задачи
+# ----------------------------------------------------------------------------------------------------------------------
+income, energy = calculation(constantLoad, loadSchedule, priceSchedule, initCharge, targetCharge)
+print("Изменение дохода: ", income)
+print("Изменение заряда ПЭБ: ", energy)
 
-    return 0
-
-
-visual_consumer(time, inc)
+fig, ax = plt.subplots(nrows=1, ncols=2)
+fig.set_figheight(8)  # Высота
+fig.set_figwidth(16)  # Длина
+plt.subplots_adjust(wspace=10, hspace=0.2, left=0.06, right=0.98, top=0.96, bottom=0.1)  # Отступы по краям
+visual_consumer(time, energy, "levelEnergy ПЭБ", 1, "energy, кВТ*ч", "red")
+visual_consumer(time, income, "Expenses", 2, "gold, руб", "blue")
+plt.show()
