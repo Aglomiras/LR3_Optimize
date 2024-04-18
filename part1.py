@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 
+
 capacity = 16000  # емкость персонального энергоблока (ПЭБ)
 initCharge = 6000  # уровень заряда ПЭБ
 
@@ -39,16 +40,16 @@ def calculate_simple(cons_power, index, resLevelEnergy_mass, resExpenses_mass):
     global targetCharge
 
     res_energy = 0
-    if targetCharge > (initCharge - cons_power):
+    if targetCharge > (initCharge - cons_power - constantLoad):
         # Покупка электроэнергии
         if cons_power % minEnergy != 0:
-            res_energy = (cons_power // minEnergy) * 1000 + 1000
+            res_energy = (cons_power / minEnergy) * 1000 + 1000
         else:
-            res_energy = (cons_power // minEnergy) * 1000
+            res_energy = (cons_power / minEnergy) * 1000
 
-        initCharge = initCharge + res_energy - cons_power
+        initCharge = initCharge + res_energy - cons_power - constantLoad
     else:
-        initCharge = initCharge - cons_power
+        initCharge = initCharge - cons_power - constantLoad
     # Запись результатов шага рачсета
     resLevelEnergy_mass[index] = initCharge
     resExpenses_mass[index] = -res_energy * priceSchedule[index]
@@ -69,10 +70,8 @@ def visual_calculate_simple(time_list, energy_list, gold_list):
 
     ax[0].set_title('levelEnergy ПЭБ')
     ax[1].set_title('Expenses')
-
     ax[0].set_xlabel('time, ч')
     ax[1].set_xlabel('time, ч')
-
     ax[0].set_ylabel('energy, кВТ*ч')
     ax[1].set_ylabel('gold, руб')
 
@@ -115,5 +114,5 @@ def visual_consumer(time_mass, power_mass):
     return 0
 
 
-# visual_consumer(time, loadSchedule)
-res_calculate_simple(time)
+visual_consumer(time, loadSchedule)
+# res_calculate_simple(time)
