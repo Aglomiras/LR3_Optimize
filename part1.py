@@ -114,5 +114,5 @@ def visual_consumer(time_mass, power_mass):
     return 0
 
 
-visual_consumer(time, loadSchedule)
-# res_calculate_simple(time)
+# visual_consumer(time, loadSchedule)
+res_calculate_simple(time)
